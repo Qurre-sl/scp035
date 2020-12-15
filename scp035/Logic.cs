@@ -19,20 +19,19 @@ namespace scp035
 		}
 		internal void RefreshItems()
 		{
-			if (Player.GetHubs().Where(x => x.GetTeam() == Team.RIP && !x.Overwatch()).ToList().Count > 0)
-			{
-				RemovePossessedItems();
-				UnityEngine.Object.FindObjectsOfType<Pickup>().Where(x => x.durability != 100000 && x.durability != 10000 && x.durability != 999999999).FirstOrDefault().durability = dur;
-			}
+			RemovePossessedItems();
+			Vector3 m = Map.Rooms[Random.Range(0, Map.Rooms.Count - 1)].Position + Vector3.up;
+			int it = Random.Range(0, 35);
+			Map.ItemSpawn((ItemType)it, dur, m);
 		}
 		internal void KillScp035(bool setRank = true)
 		{
+			if (setRank)
+				scpPlayer.SetRank("");
 			scpPlayer.playerStats.maxHP = maxHP;
 			scpPlayer = null;
 			isRotating = true;
 			RefreshItems();
-			if (setRank)
-				scpPlayer.SetRank("");
 		}
 		public static void Spawn035(ReferenceHub p035)
 		{

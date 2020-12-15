@@ -77,16 +77,7 @@ namespace scp035
 			if (ev.Target == null || scpPlayer == null) return;
 			ReferenceHub target = Player.Get(ev.Target);
 			if (target == null) return;
-			if ((ev.Shooter.GetPlayerId() == scpPlayer?.queryProcessor.PlayerId &&
-				target.GetTeam() == scpPlayer?.GetTeam())
-				|| (target.GetPlayerId() == scpPlayer?.queryProcessor.PlayerId &&
-				ev.Shooter.GetTeam() == scpPlayer?.GetTeam()))
-				GrantFF(ev.Shooter);
-			if ((ev.Shooter.GetPlayerId() == scpPlayer?.queryProcessor.PlayerId || target.GetPlayerId() == scpPlayer?.queryProcessor.PlayerId) &&
-				(((ev.Shooter.GetTeam() == Team.CDP && target.GetTeam() == Team.CHI)
-				|| (ev.Shooter.GetTeam() == Team.CHI && target.GetTeam() == Team.CDP)) ||
-				(ev.Shooter.GetTeam() == Team.RSC && target.GetTeam() == Team.MTF)
-				|| (ev.Shooter.GetTeam() == Team.MTF && target.GetTeam() == Team.RSC)))
+			if (target.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId || ev.Shooter.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
 				GrantFF(ev.Shooter);
 		}
 		public void PlayerDie(DiedEvent ev)
