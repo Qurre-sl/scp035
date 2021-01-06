@@ -179,7 +179,7 @@ namespace scp035
 		{
 			try
 			{
-				var extractedArguments = ev.Message.Split(' ');
+				var extractedArguments = ev.Command.Split(' ');
 				string name = extractedArguments[0].ToLower();
 				string[] args = extractedArguments.Skip(1).ToArray();
 				List<string> arguments = args.ToList();

@@ -1,9 +1,10 @@
-﻿using Qurre.API;
+﻿using Interactables.Interobjects.DoorUtils;
+using Qurre.API;
 using System.Linq;
 using UnityEngine;
 namespace scp035
 {
-    public static class Extensions
+	public static class Extensions
 	{
 		public static void SetRank(this ReferenceHub player, string rank, string color = "default")
 		{
@@ -14,19 +15,13 @@ namespace scp035
 		{
 			try
 			{
-				ReferenceHub scp106 = Player.GetHubs().Where(x => x.characterClassManager.CurClass == (global::RoleType)RoleType.Scp106).FirstOrDefault();
+				ReferenceHub scp106 = Player.GetHubs().Where(x => x.characterClassManager.CurClass == RoleType.Scp106).FirstOrDefault();
 				Vector3 toded = scp106.transform.position;
 				player.SetPosition(toded);
 			}
 			catch
 			{
-				foreach (Door door in UnityEngine.Object.FindObjectsOfType<Door>())
-				{
-					if (door.DoorName == "106_PRIMARY")
-					{
-						player.SetPosition(new Vector3(door.transform.position.x, door.transform.position.y + 1, door.transform.position.z));
-					}
-				}
+				player.SetPosition(Map.GetRandomSpawnPoint(RoleType.Scp096));
 			}
 		}
 	}
