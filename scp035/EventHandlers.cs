@@ -25,9 +25,9 @@ namespace scp035
 		public void WFP() => Cfg.Reload();
 		public void RoundStart()
 		{
+			RefreshItems();
 			isRoundStarted = true;
 			isRotating = true;
-			scpPickups.Clear();
 			scpPlayer = null;
 			Coroutines.Add(Timing.RunCoroutine(CorrodeUpdate()));
 		}
