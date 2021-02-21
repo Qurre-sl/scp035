@@ -11,17 +11,17 @@ namespace scp035
 			player.serverRoles.NetworkMyText = rank;
 			player.serverRoles.NetworkMyColor = color;
 		}
-		internal static void TeleportTo106(ReferenceHub player)
+		internal static void TeleportTo106(Player player)
 		{
 			try
 			{
-				ReferenceHub scp106 = Player.GetHubs().Where(x => x.characterClassManager.CurClass == RoleType.Scp106).FirstOrDefault();
-				Vector3 toded = scp106.transform.position;
-				player.SetPosition(toded);
+				Player scp106 = Player.List.Where(x => x.Role == RoleType.Scp106).FirstOrDefault();
+				Vector3 toded = scp106.Position;
+				player.Position = toded;
 			}
 			catch
 			{
-				player.SetPosition(Map.GetRandomSpawnPoint(RoleType.Scp096));
+				player.Position = Map.GetRandomSpawnPoint(RoleType.Scp096);
 			}
 		}
 	}

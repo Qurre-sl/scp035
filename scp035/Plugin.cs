@@ -4,7 +4,9 @@ namespace scp035
     public class Plugin : Qurre.Plugin
     {
 		#region override
-		public override string name => "scp035";
+		public override string Version => "1.0.4";
+		public override string Developer => "fydne";
+		public override string Name => "scp035";
 		public override void Enable() => RegisterEvents();
 		public override void Disable() => UnregisterEvents();
 		public override void Reload() => Cfg.Reload();

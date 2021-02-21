@@ -26,24 +26,23 @@ namespace scp035
 		}
 		internal void KillScp035(bool setRank = true)
 		{
-			if (setRank)
-				scpPlayer.SetRank("");
-			scpPlayer.playerStats.maxHP = maxHP;
+			if (setRank) scpPlayer.ReferenceHub.SetRank("");
+			scpPlayer.MaxHP = maxHP;
 			scpPlayer = null;
 			isRotating = true;
 			RefreshItems();
 		}
-		public static void Spawn035(ReferenceHub p035)
+		public static void Spawn035(Player p035)
 		{
 			maxHP = 300;
-			p035.playerStats.maxHP = 300;
-			p035.playerStats.Health = 300;
+			p035.MaxHP = 300;
+			p035.HP = 300;
 			p035.Broadcast(Cfg.bct, Cfg.bc1);
 			Cassie.Send(Cfg.cassie, false, false);
 			scpPlayer = p035;
-			p035.SetRank("SCP 035", "red");
+			p035.ReferenceHub.SetRank("SCP 035", "red");
 		}
-		public void InfectPlayer(ReferenceHub player, Pickup pItem)
+		public void InfectPlayer(Player player, Pickup pItem)
 		{
 			pItem.Delete();
 			isRotating = false;
@@ -59,17 +58,17 @@ namespace scp035
 				{
 					if (scpPlayer != null && isRoundStarted)
 					{
-						IEnumerable<ReferenceHub> pList = Player.GetHubs().Where(x => x.queryProcessor.PlayerId != scpPlayer.queryProcessor.PlayerId);
-						pList = pList.Where(x => x.GetTeam() != Team.SCP);
-						pList = pList.Where(x => x.GetTeam() != Team.TUT);
-						foreach (ReferenceHub player in pList)
+						IEnumerable<Player> pList = Player.List.Where(x => x.Id != scpPlayer.Id);
+						pList = pList.Where(x => x.Team != Team.SCP);
+						pList = pList.Where(x => x.Team != Team.TUT);
+						foreach (Player player in pList)
 						{
-							if (player != null && Vector3.Distance(scpPlayer.transform.position, player.transform.position) <= 1.5f)
+							if (player != null && Vector3.Distance(scpPlayer.Position, player.Position) <= 1.5f)
 							{
 								player.Broadcast(1, Cfg.bc2);
 								CorrodePlayer(player);
 							}
-							else if (player != null && Vector3.Distance(scpPlayer.transform.position, player.transform.position) <= 15f)
+							else if (player != null && Vector3.Distance(scpPlayer.Position, player.Position) <= 15f)
 								player.Broadcast(1, Cfg.bc3);
 
 						}
@@ -79,39 +78,39 @@ namespace scp035
 			}
 		}
 
-		private void CorrodePlayer(ReferenceHub player)
+		private void CorrodePlayer(Player player)
 		{
 			if (scpPlayer != null)
 			{
-				int currHP = (int)scpPlayer.playerStats.Health;
-				scpPlayer.playerStats.Health = currHP + 5 > 300 ? 300 : currHP + 5;
+				int currHP = (int)scpPlayer.HP;
+				scpPlayer.HP = currHP + 5 > 300 ? 300 : currHP + 5;
 			}
-			if (player.playerStats.Health - 5 > 0)
-				player.playerStats.Health -= 5;
+			if (player.HP - 5 > 0)
+				player.HP -= 5;
 			else
 			{
 				player.Damage(55555, DamageTypes.None);
-				ReferenceHub spy = scpPlayer;
+				Player spy = scpPlayer;
 				{
 					Inventory.SyncListItemInfo items = new Inventory.SyncListItemInfo();
-					foreach (var item in spy.inventory.items) items.Add(item);
-					Vector3 pos1 = player.transform.position;
-					Quaternion rot = spy.transform.rotation;
-					int health = (int)spy.playerStats.Health;
-					spy.SetRole(player.GetRole());
+					foreach (var item in spy.Inventory.items) items.Add(item);
+					Vector3 pos1 = player.Position;
+					Vector2 rot = spy.Rotations;
+					int health = (int)spy.HP;
+					spy.SetRole(player.Role);
 					Timing.CallDelayed(0.3f, () =>
 					{
-						spy.playerMovementSync.OverridePosition(pos1, 0f);
-						spy.SetRotation(rot.x, rot.y);
-						spy.inventory.items.Clear();
-						foreach (var item in items) spy.inventory.AddNewItem(item.id);
-						spy.playerStats.Health = health;
-						spy.ammoBox.ResetAmmo();
+						spy.Position = pos1;
+						spy.Rotation = rot;
+						spy.ClearInventory();
+						foreach (var item in items) spy.AddItem(item.id);
+						spy.HP = health;
+						spy.Ammo.ResetAmmo();
 					});
 				}
 				player.Damage(5, DamageTypes.Nuke);
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
-					if (doll.owner.PlayerId == player.queryProcessor.PlayerId)
+					if (doll.owner.PlayerId == player.Id)
 						NetworkServer.Destroy(doll.gameObject);
 			}
 		}

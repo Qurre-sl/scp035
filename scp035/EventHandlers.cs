@@ -16,7 +16,7 @@ namespace scp035
 		public static Plugin Plugin;
 		public EventHandlers(Plugin plugin) => Plugin = plugin;
 		private static Dictionary<Pickup, float> scpPickups = new Dictionary<Pickup, float>();
-		internal static ReferenceHub scpPlayer;
+		internal static Player scpPlayer;
 		internal bool isRoundStarted;
 		internal static bool isRotating;
 		private static int maxHP;
@@ -53,19 +53,19 @@ namespace scp035
 			RemoveFF(ev.Attacker);
 			if (scpPlayer != null)
 			{
-				if ((ev.Attacker.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId &&
-					ev.Target.GetTeam() == Team.SCP) ||
-					(ev.Target.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId &&
-					ev.Attacker.GetTeam() == Team.SCP))
+				if ((ev.Attacker.Id == scpPlayer?.Id &&
+					ev.Target.Team == Team.SCP) ||
+					(ev.Target.Id == scpPlayer?.Id &&
+					ev.Attacker.Team == Team.SCP))
 				{
 					ev.IsAllowed = false;
 					ev.Amount = 0f;
 				}
-				if (ev.Attacker.queryProcessor.PlayerId != ev.Target.queryProcessor.PlayerId &&
-					((ev.Attacker.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId &&
-					ev.Target.GetTeam() == Team.TUT) ||
-					(ev.Target.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId &&
-					ev.Attacker.GetTeam() == Team.TUT)))
+				if (ev.Attacker.Id != ev.Target.Id &&
+					((ev.Attacker.Id == scpPlayer?.Id &&
+					ev.Target.Team == Team.TUT) ||
+					(ev.Target.Id == scpPlayer?.Id &&
+					ev.Attacker.Team == Team.TUT)))
 				{
 					ev.IsAllowed = false;
 					ev.Amount = 0f;
@@ -75,101 +75,101 @@ namespace scp035
 		public void Shoot(ShootingEvent ev)
 		{
 			if (ev.Target == null || scpPlayer == null) return;
-			ReferenceHub target = Player.Get(ev.Target);
+			Player target = Player.Get(ev.Target);
 			if (target == null) return;
-			if (target.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId || ev.Shooter.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (target.Id == scpPlayer?.Id || ev.Shooter.Id == scpPlayer?.Id)
 				GrantFF(ev.Shooter);
 		}
 		public void PlayerDie(DiedEvent ev)
 		{
-			if (ev.Target.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Target.Id == scpPlayer?.Id)
 				KillScp035();
-			if (ev.Killer.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Killer.Id == scpPlayer?.Id)
 			{
-				if (ev.Target.GetTeam() == Team.SCP) return;
-				if (ev.Target.GetRole() == RoleType.Spectator) return;
-				ReferenceHub spy = scpPlayer;
+				if (ev.Target.Team == Team.SCP) return;
+				if (ev.Target.Role == RoleType.Spectator) return;
+				Player spy = scpPlayer;
 				{
 					Inventory.SyncListItemInfo items = new Inventory.SyncListItemInfo();
-					foreach (var item in spy.inventory.items) items.Add(item);
-					Vector3 pos1 = ev.Target.transform.position;
-					Quaternion rot = spy.transform.rotation;
-					int health = (int)spy.playerStats.Health;
-					spy.SetRole(ev.Target.GetRole());
+					foreach (var item in spy.Inventory.items) items.Add(item);
+					Vector3 pos1 = ev.Target.Position;
+					Vector2 rot = spy.Rotations;
+					int health = (int)spy.HP;
+					spy.SetRole(ev.Target.Role);
 					Timing.CallDelayed(0.3f, () =>
 					{
-						spy.playerMovementSync.OverridePosition(pos1, 0f);
-						spy.SetRotation(rot.x, rot.y);
-						spy.inventory.items.Clear();
-						foreach (var item in items) spy.inventory.AddNewItem(item.id);
-						spy.playerStats.Health = health;
-						spy.ammoBox.ResetAmmo();
+						spy.Position = pos1;
+						spy.Rotations = rot;
+						spy.ClearInventory();
+						foreach (var item in items) spy.AddItem(item.id);
+						spy.HP = health;
+						spy.Ammo.ResetAmmo();
 					});
 				}
 			}
 		}
 		public void PlayerDied(DiedEvent ev)
 		{
-			if (ev.Killer.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Killer.Id == scpPlayer?.Id)
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
-					if (doll.owner.PlayerId == ev.Target.queryProcessor.PlayerId)
+					if (doll.owner.PlayerId == ev.Target.Id)
 						NetworkServer.Destroy(doll.gameObject);
 		}
 		public void scpzeroninesixe(EnrageEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 			{
 				ev.IsAllowed = false;
 			}
 		}
 		public void scpzeroninesixeadd(AddTargetEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				ev.IsAllowed = false;
 		}
 		public void PocketDimensionEnter(PocketDimensionEnterEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				ev.IsAllowed = false;
 		}
 		public void FemurBreaker(FemurBreakerEnterEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				ev.IsAllowed = false;
 		}
 		public void CheckEscape(EscapeEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId) ev.IsAllowed = false;
+			if (ev.Player.Id == scpPlayer?.Id) ev.IsAllowed = false;
 		}
 		public void SetClass(RoleChangeEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				if (ev.NewRole == (global::RoleType)RoleType.Spectator)
 					KillScp035();
 		}
 		public void PlayerLeave(LeaveEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				KillScp035(false);
 		}
 		public void Contain106(ContainEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				ev.IsAllowed = false;
 		}
 		public void PlayerHandcuffed(CuffEvent ev)
 		{
-			if (ev.Target.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Target.Id == scpPlayer?.Id)
 				ev.IsAllowed = false;
 		}
 		public void InsertTablet(InteractGeneratorEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 				ev.IsAllowed = false;
 		}
 		public void PocketDimensionDie(PocketDimensionFailEscapeEvent ev)
 		{
-			if (ev.Player.queryProcessor.PlayerId == scpPlayer?.queryProcessor.PlayerId)
+			if (ev.Player.Id == scpPlayer?.Id)
 			{
 				ev.IsAllowed = false;
 				Extensions.TeleportTo106(ev.Player);
@@ -184,7 +184,7 @@ namespace scp035
 				string[] args = extractedArguments.Skip(1).ToArray();
 				List<string> arguments = args.ToList();
 				string name1 = string.Join(" ", arguments.Skip(0));
-				ReferenceHub player = Player.Get(name1);
+				Player player = Player.Get(name1);
 				if (name == Cfg.ra1)
 				{
 					ev.IsAllowed = false;
@@ -204,7 +204,7 @@ namespace scp035
 
 			}
 		}
-		private void GrantFF(ReferenceHub player) => player.SetFriendlyFire(true);
-		private void RemoveFF(ReferenceHub player) => player.SetFriendlyFire(false);
+		private void GrantFF(Player player) => player.FriendlyFire = true;
+		private void RemoveFF(Player player) => player.FriendlyFire = false;
 	}
 }
