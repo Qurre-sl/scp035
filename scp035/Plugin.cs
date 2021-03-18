@@ -4,8 +4,8 @@ namespace scp035
     public class Plugin : Qurre.Plugin
     {
 		#region override
-		public override System.Version Version => new System.Version(1, 0, 5);
-		public override System.Version NeededQurreVersion => new System.Version(1, 1, 1);
+		public override System.Version Version => new System.Version(1, 0, 6);
+		public override System.Version NeededQurreVersion => new System.Version(1, 2, 0);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
 		public override void Enable() => RegisterEvents();
@@ -23,8 +23,8 @@ namespace scp035
 			Player.PickupItem += EventHandlers.PickupItem;
 			Round.End += EventHandlers.RoundEnd;
 			Round.Restart += EventHandlers.RoundRestart;
-			Player.Died += EventHandlers.PlayerDie;
-			Player.Died += EventHandlers.PlayerDied;
+			Player.Dies += EventHandlers.PlayerDie;
+			Player.Dead += EventHandlers.PlayerDied;
 			Player.Damage += EventHandlers.PlayerHurt;
 			SCPs.SCP106.PocketDimensionEnter += EventHandlers.PocketDimensionEnter;
 			SCPs.SCP106.FemurBreakerEnter += EventHandlers.FemurBreaker;
@@ -47,8 +47,8 @@ namespace scp035
 			Player.PickupItem -= EventHandlers.PickupItem;
 			Round.End -= EventHandlers.RoundEnd;
 			Round.Restart -= EventHandlers.RoundRestart;
-			Player.Died -= EventHandlers.PlayerDie;
-			Player.Died -= EventHandlers.PlayerDied;
+			Player.Dies -= EventHandlers.PlayerDie;
+			Player.Dead -= EventHandlers.PlayerDied;
 			Player.Damage -= EventHandlers.PlayerHurt;
 			SCPs.SCP106.PocketDimensionEnter -= EventHandlers.PocketDimensionEnter;
 			SCPs.SCP106.FemurBreakerEnter -= EventHandlers.FemurBreaker;

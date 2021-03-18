@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Qurre.API.Events.SCP096;
-using static Qurre.API.Events.SCP106;
 namespace scp035
 {
 	public partial class EventHandlers
@@ -40,11 +38,11 @@ namespace scp035
 		public void RoundRestart() => isRoundStarted = false;
 		public void PickupItem(PickupItemEvent ev)
 		{
-			if (ev.IsAllowed)
+			if (ev.Allowed)
 				if (scpPlayer == null)
 					if (ev.Pickup.durability == dur)
 					{
-						ev.IsAllowed = false;
+						ev.Allowed = false;
 						InfectPlayer(ev.Player, ev.Pickup);
 					}
 		}
@@ -58,7 +56,7 @@ namespace scp035
 					(ev.Target.Id == scpPlayer?.Id &&
 					ev.Attacker.Team == Team.SCP))
 				{
-					ev.IsAllowed = false;
+					ev.Allowed = false;
 					ev.Amount = 0f;
 				}
 				if (ev.Attacker.Id != ev.Target.Id &&
@@ -67,7 +65,7 @@ namespace scp035
 					(ev.Target.Id == scpPlayer?.Id &&
 					ev.Attacker.Team == Team.TUT)))
 				{
-					ev.IsAllowed = false;
+					ev.Allowed = false;
 					ev.Amount = 0f;
 				}
 			}
@@ -80,7 +78,7 @@ namespace scp035
 			if (target.Id == scpPlayer?.Id || ev.Shooter.Id == scpPlayer?.Id)
 				GrantFF(ev.Shooter);
 		}
-		public void PlayerDie(DiedEvent ev)
+		public void PlayerDie(DiesEvent ev)
 		{
 			if (ev.Target.Id == scpPlayer?.Id)
 				KillScp035();
@@ -108,7 +106,7 @@ namespace scp035
 				}
 			}
 		}
-		public void PlayerDied(DiedEvent ev)
+		public void PlayerDied(DeadEvent ev)
 		{
 			if (ev.Killer.Id == scpPlayer?.Id)
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
@@ -119,27 +117,27 @@ namespace scp035
 		{
 			if (ev.Player.Id == scpPlayer?.Id)
 			{
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 			}
 		}
 		public void scpzeroninesixeadd(AddTargetEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
-				ev.IsAllowed = false;
+			if (ev.Target.Id == scpPlayer?.Id)
+				ev.Allowed = false;
 		}
 		public void PocketDimensionEnter(PocketDimensionEnterEvent ev)
 		{
 			if (ev.Player.Id == scpPlayer?.Id)
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 		}
 		public void FemurBreaker(FemurBreakerEnterEvent ev)
 		{
 			if (ev.Player.Id == scpPlayer?.Id)
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 		}
 		public void CheckEscape(EscapeEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id) ev.IsAllowed = false;
+			if (ev.Player.Id == scpPlayer?.Id) ev.Allowed = false;
 		}
 		public void SetClass(RoleChangeEvent ev)
 		{
@@ -155,23 +153,23 @@ namespace scp035
 		public void Contain106(ContainEvent ev)
 		{
 			if (ev.Player.Id == scpPlayer?.Id)
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 		}
 		public void PlayerHandcuffed(CuffEvent ev)
 		{
 			if (ev.Target.Id == scpPlayer?.Id)
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 		}
 		public void InsertTablet(InteractGeneratorEvent ev)
 		{
 			if (ev.Player.Id == scpPlayer?.Id)
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 		}
 		public void PocketDimensionDie(PocketDimensionFailEscapeEvent ev)
 		{
 			if (ev.Player.Id == scpPlayer?.Id)
 			{
-				ev.IsAllowed = false;
+				ev.Allowed = false;
 				Extensions.TeleportTo106(ev.Player);
 			}
 		}
@@ -187,7 +185,7 @@ namespace scp035
 				Player player = Player.Get(name1);
 				if (name == Cfg.ra1)
 				{
-					ev.IsAllowed = false;
+					ev.Allowed = false;
 					if (player == null)
 					{
 						ev.ReplyMessage = Cfg.ra2;

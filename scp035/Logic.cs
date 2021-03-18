@@ -22,7 +22,7 @@ namespace scp035
 			RemovePossessedItems();
 			Vector3 m = Map.Rooms[Random.Range(0, Map.Rooms.Count - 1)].Position + Vector3.up;
 			int it = Random.Range(0, 35);
-			Map.ItemSpawn((ItemType)it, dur, m);
+			Qurre.API.Item.Spawn((ItemType)it, dur, m);
 		}
 		internal void KillScp035(bool setRank = true)
 		{
