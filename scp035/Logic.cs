@@ -1,6 +1,7 @@
 ﻿using MEC;
 using Mirror;
 using Qurre.API;
+using Qurre.API.Controllers;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace scp035
 			p035.MaxHP = 300;
 			p035.HP = 300;
 			p035.Broadcast(Cfg.bct, Cfg.bc1);
-			Cassie.Send(Cfg.cassie, false, false);
+			Cassie.Send(Cfg.cassie, false, false, true);
 			scpPlayer = p035;
 			p035.ReferenceHub.SetRank("SCP 035", "red");
 		}
