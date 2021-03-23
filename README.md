@@ -6,7 +6,7 @@ adds a new scp in the game
 # Configs
 ```yml
 scp035_bc_time: 10
-scp035_spawn_bc: <size=60>You are <color=red><b>SCP 035</b></color></size>\nYou infected the body and gained control over it, use it to help other SCPs!
+scp035_spawn_bc: <size=30%><color=#707480>You have been infected with <color=red>SCP 035</color>,</color>\n<color=#707480>now your task is to help other <color=red>SCPs</color></color></size>
 scp035_damage_bc: <size=25%><color=#6f6f6f><color=red>SCP 035</color> attacks you</color></size>
 scp035_distance_bc: <size=25%><color=#f47fff>*<color=#0089c7>sniffs</color>*</color>\n<color=#6f6f6f>You smell rot, it looks like it's <color=red>SCP 035</color></color></size>
 scp035_cassie: ATTENTION TO ALL PERSONNEL . SCP 0 3 5 ESCAPE . ALL HELICOPTERS AND MOBILE TASK FORCES IMMEDIATELY MOVE FORWARD TO GATE B . REPEAT ALL HELICOPTERS AND MOBILE TASK FORCES IMMEDIATELY MOVE FORWARD TO GATE B

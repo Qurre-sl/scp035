@@ -81,29 +81,35 @@ namespace scp035
 		public void PlayerDie(DiesEvent ev)
 		{
 			if (ev.Target.Id == scpPlayer?.Id)
+            {
 				KillScp035();
-			if (ev.Killer.Id == scpPlayer?.Id)
+				return;
+			}
+			if (ev.Killer?.Id == scpPlayer?.Id && ev.Killer?.Id != ev.Target?.Id)
 			{
 				if (ev.Target.Team == Team.SCP) return;
 				if (ev.Target.Role == RoleType.Spectator) return;
-				Player spy = scpPlayer;
+				Player pl = scpPlayer;
+				Inventory.SyncListItemInfo items = new Inventory.SyncListItemInfo();
+				foreach (var item in pl.Inventory.items) items.Add(item);
+				Vector3 pos1 = ev.Target.Position;
+				Vector3 rot = pl.Rotation;
+				float health = pl.HP;
+				uint Ammo5 = pl.Ammo5;
+				uint Ammo7 = pl.Ammo7;
+				uint Ammo9 = pl.Ammo9;
+				if (ev.Target.Role != RoleType.Spectator) scpPlayer.SetRole(ev.Target.Role);
+				Timing.CallDelayed(0.5f, () =>
 				{
-					Inventory.SyncListItemInfo items = new Inventory.SyncListItemInfo();
-					foreach (var item in spy.Inventory.items) items.Add(item);
-					Vector3 pos1 = ev.Target.Position;
-					Vector2 rot = spy.Rotations;
-					int health = (int)spy.HP;
-					spy.SetRole(ev.Target.Role);
-					Timing.CallDelayed(0.3f, () =>
-					{
-						spy.Position = pos1;
-						spy.Rotations = rot;
-						spy.ClearInventory();
-						foreach (var item in items) spy.AddItem(item.id);
-						spy.HP = health;
-						spy.Ammo.ResetAmmo();
-					});
-				}
+					pl.Position = pos1;
+					scpPlayer.Rotation = rot;
+					foreach (var item in items) pl.AddItem(item.id);
+					scpPlayer.MaxHP = maxHP;
+					scpPlayer.HP = health;
+					scpPlayer.Ammo5 = Ammo5;
+					scpPlayer.Ammo7 = Ammo7;
+					scpPlayer.Ammo9 = Ammo9;
+				});
 			}
 		}
 		public void PlayerDied(DeadEvent ev)
@@ -115,10 +121,7 @@ namespace scp035
 		}
 		public void scpzeroninesixe(EnrageEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
-			{
-				ev.Allowed = false;
-			}
+			if (ev.Player.Id == scpPlayer?.Id) ev.Allowed = false;
 		}
 		public void scpzeroninesixeadd(AddTargetEvent ev)
 		{
