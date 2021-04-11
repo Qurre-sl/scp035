@@ -6,7 +6,6 @@ using Qurre.API.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 namespace scp035
 {
 	public partial class EventHandlers
@@ -89,27 +88,7 @@ namespace scp035
 			{
 				if (ev.Target.Team == Team.SCP) return;
 				if (ev.Target.Role == RoleType.Spectator) return;
-				Player pl = scpPlayer;
-				Inventory.SyncListItemInfo items = new Inventory.SyncListItemInfo();
-				foreach (var item in pl.Inventory.items) items.Add(item);
-				Vector3 pos1 = ev.Target.Position;
-				Vector3 rot = pl.Rotation;
-				float health = pl.HP;
-				uint Ammo5 = pl.Ammo5;
-				uint Ammo7 = pl.Ammo7;
-				uint Ammo9 = pl.Ammo9;
-				if (ev.Target.Role != RoleType.Spectator) scpPlayer.SetRole(ev.Target.Role);
-				Timing.CallDelayed(0.5f, () =>
-				{
-					pl.Position = pos1;
-					scpPlayer.Rotation = rot;
-					foreach (var item in items) pl.AddItem(item.id);
-					scpPlayer.MaxHP = maxHP;
-					scpPlayer.HP = health;
-					scpPlayer.Ammo5 = Ammo5;
-					scpPlayer.Ammo7 = Ammo7;
-					scpPlayer.Ammo9 = Ammo9;
-				});
+				scpPlayer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.GetDamageType());
 			}
 		}
 		public void PlayerDied(DeadEvent ev)

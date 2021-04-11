@@ -90,29 +90,8 @@ namespace scp035
 				player.HP -= 5;
 			else
 			{
-				player.Damage(55555, DamageTypes.None);
-				Player pl = scpPlayer;
-				Inventory.SyncListItemInfo items = new Inventory.SyncListItemInfo();
-				foreach (var item in pl.Inventory.items) items.Add(item);
-				Vector3 pos1 = player.Position;
-				Vector3 rot = pl.Rotation;
-				float health = pl.HP;
-				uint Ammo5 = pl.Ammo5;
-				uint Ammo7 = pl.Ammo7;
-				uint Ammo9 = pl.Ammo9;
-				if (player.Role != RoleType.Spectator) scpPlayer.SetRole(player.Role);
-				Timing.CallDelayed(0.5f, () =>
-				{
-					pl.Position = pos1;
-					scpPlayer.Rotation = rot;
-					foreach (var item in items) pl.AddItem(item.id);
-					scpPlayer.MaxHP = maxHP;
-					scpPlayer.HP = health;
-					scpPlayer.Ammo5 = Ammo5;
-					scpPlayer.Ammo7 = Ammo7;
-					scpPlayer.Ammo9 = Ammo9;
-				});
-				player.Damage(5, DamageTypes.Nuke);
+				player.Damage(55555, DamageTypes.Falldown);
+				scpPlayer.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 					if (doll.owner.PlayerId == player.Id)
 						NetworkServer.Destroy(doll.gameObject);
