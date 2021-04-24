@@ -80,7 +80,7 @@ namespace scp035
 		public void PlayerDie(DiesEvent ev)
 		{
 			if (ev.Target.Id == scpPlayer?.Id)
-            {
+			{
 				KillScp035();
 				return;
 			}
@@ -154,6 +154,33 @@ namespace scp035
 				ev.Allowed = false;
 				Extensions.TeleportTo106(ev.Player);
 			}
+		}
+		public void Med(MedicalUsingEvent ev)
+		{
+			try
+			{
+				if (ev.Player == null || ev.Player.UserId == null || scpPlayer == null || scpPlayer.UserId == null) return;
+				if (ev.Player.UserId == scpPlayer.UserId)
+				{
+					ev.Player.MaxHP = 300;
+				}
+			}
+			catch { }
+		}
+		public void Check(CheckEvent ev)
+		{
+			if (scpPlayer == null || scpPlayer.UserId == null) return;
+			int mtf_team = ev.ClassList.mtf_and_guards + ev.ClassList.scientists;
+			int d_team = ev.ClassList.chaos_insurgents + ev.ClassList.class_ds;
+			int scp_team = ev.ClassList.scps_except_zombies + ev.ClassList.zombies;
+			if (scpPlayer.Team == Team.MTF || scpPlayer.Team == Team.RIP) mtf_team--;
+			else if (scpPlayer.Team == Team.CDP || scpPlayer.Team == Team.CHI) d_team--;
+			scp_team++;
+			int count = 0;
+			if (mtf_team > 0) ++count;
+			if (d_team > 0) ++count;
+			if (scp_team > 0) ++count;
+			if (count <= 1) Round.End();
 		}
 		public void RunOnRACommandSent(SendingRAEvent ev)
 		{
