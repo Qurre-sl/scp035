@@ -47,7 +47,7 @@ namespace scp035
 		{
 			pItem.Delete();
 			isRotating = false;
-			Timing.CallDelayed(3f, () => Spawn035(player));
+			Spawn035(player);
 			RemovePossessedItems();
 		}
 		internal IEnumerator<float> CorrodeUpdate()
@@ -62,6 +62,7 @@ namespace scp035
 						IEnumerable<Player> pList = Player.List.Where(x => x.Id != scpPlayer.Id);
 						pList = pList.Where(x => x.Team != Team.SCP);
 						pList = pList.Where(x => x.Team != Team.TUT);
+						pList = pList.Where(x => x.Team != Team.RIP);
 						foreach (Player player in pList)
 						{
 							if (player != null && Vector3.Distance(scpPlayer.Position, player.Position) <= 1.5f)
@@ -90,8 +91,8 @@ namespace scp035
 				player.HP -= 5;
 			else
 			{
-				player.Damage(55555, DamageTypes.Falldown);
 				scpPlayer.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
+				player.Damage(55555, DamageTypes.Falldown);
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 					if (doll.owner.PlayerId == player.Id)
 						NetworkServer.Destroy(doll.gameObject);

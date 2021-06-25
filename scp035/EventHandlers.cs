@@ -18,7 +18,6 @@ namespace scp035
 		internal static bool isRotating;
 		private static int maxHP;
 		private const float dur = 327;
-		public static List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
 		public void WFP() => Cfg.Reload();
 		public void RoundStart()
 		{
@@ -26,13 +25,12 @@ namespace scp035
 			isRoundStarted = true;
 			isRotating = true;
 			scpPlayer = null;
-			Coroutines.Add(Timing.RunCoroutine(CorrodeUpdate()));
+			Timing.RunCoroutine(CorrodeUpdate(), "scp035coroutines");
 		}
 		public void RoundEnd(RoundEndEvent ev)
 		{
 			isRoundStarted = false;
-			Timing.KillCoroutines(Coroutines);
-			Coroutines.Clear();
+			Timing.KillCoroutines("scp035coroutines");
 		}
 		public void RoundRestart() => isRoundStarted = false;
 		public void PickupItem(PickupItemEvent ev)
@@ -119,13 +117,13 @@ namespace scp035
 		}
 		public void CheckEscape(EscapeEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id) ev.Allowed = false;
+			if (ev.Player.Id == scpPlayer?.Id)
+				ev.Allowed = false;
 		}
 		public void SetClass(RoleChangeEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
-				if (ev.NewRole == (global::RoleType)RoleType.Spectator)
-					KillScp035();
+			if (ev.Player.Id == scpPlayer?.Id && ev.NewRole == RoleType.Spectator)
+				KillScp035();
 		}
 		public void PlayerLeave(LeaveEvent ev)
 		{
