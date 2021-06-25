@@ -11,12 +11,7 @@ namespace scp035
 	{
 		private static void RemovePossessedItems()
 		{
-			for (int i = 0; i < scpPickups.Count; i++)
-			{
-				Pickup p = scpPickups.ElementAt(i).Key;
-				if (p != null) p.Delete();
-			}
-			scpPickups.Clear();
+			foreach (Pickup p in Map.Pickups.Where(x => x.durability == dur && x != null)) p.Delete();
 		}
 		internal void RefreshItems()
 		{
@@ -25,28 +20,31 @@ namespace scp035
 			int it = Random.Range(0, 35);
 			Qurre.API.Item.Spawn((ItemType)it, dur, m);
 		}
-		internal void KillScp035(bool setRank = true)
+		internal void KillScp035(Player pl, bool leave = false)
 		{
-			if (setRank) scpPlayer.ReferenceHub.SetRank("");
-			scpPlayer.MaxHP = maxHP;
-			scpPlayer = null;
-			isRotating = true;
-			RefreshItems();
+			if (!leave)
+			{
+				pl.Tag = pl.Tag.Replace(TagForPlayer, "");
+				pl.MaxHP = pl.ClassManager.CurRole.maxHP;
+				pl.RoleColor = "default";
+				pl.RoleName = "";
+			}
+			if (Player.List.Where(x => x.Tag.Contains(TagForPlayer)).Count() == 0)
+				RefreshItems();
 		}
 		public static void Spawn035(Player p035)
 		{
-			maxHP = 300;
 			p035.MaxHP = 300;
 			p035.HP = 300;
 			p035.Broadcast(Cfg.bct, Cfg.bc1);
 			Cassie.Send(Cfg.cassie, false, false, true);
-			scpPlayer = p035;
-			p035.ReferenceHub.SetRank("SCP 035", "red");
+			p035.RoleColor = "red";
+			p035.RoleName = "SCP 035";
+			p035.Tag += TagForPlayer;
 		}
 		public void InfectPlayer(Player player, Pickup pItem)
 		{
 			pItem.Delete();
-			isRotating = false;
 			Spawn035(player);
 			RemovePossessedItems();
 		}
@@ -57,22 +55,24 @@ namespace scp035
 				yield return Timing.WaitForSeconds(1f);
 				try
 				{
-					if (scpPlayer != null && isRoundStarted)
+					if (Round.Started)
 					{
-						IEnumerable<Player> pList = Player.List.Where(x => x.Id != scpPlayer.Id);
+						IEnumerable<Player> pList = Player.List.Where(x => !x.Tag.Contains(TagForPlayer));
 						pList = pList.Where(x => x.Team != Team.SCP);
 						pList = pList.Where(x => x.Team != Team.TUT);
 						pList = pList.Where(x => x.Team != Team.RIP);
-						foreach (Player player in pList)
+						foreach (Player scp035 in Player.List.Where(x => x.Tag.Contains(TagForPlayer)))
 						{
-							if (player != null && Vector3.Distance(scpPlayer.Position, player.Position) <= 1.5f)
+							foreach (Player player in pList)
 							{
-								player.Broadcast(1, Cfg.bc2);
-								CorrodePlayer(player);
+								if (player != null && Vector3.Distance(scp035.Position, player.Position) <= 1.5f)
+								{
+									player.Broadcast(1, Cfg.bc2);
+									CorrodePlayer(player, scp035);
+								}
+								else if (player != null && Vector3.Distance(scp035.Position, player.Position) <= 15f)
+									player.Broadcast(1, Cfg.bc3);
 							}
-							else if (player != null && Vector3.Distance(scpPlayer.Position, player.Position) <= 15f)
-								player.Broadcast(1, Cfg.bc3);
-
 						}
 					}
 				}
@@ -80,18 +80,18 @@ namespace scp035
 			}
 		}
 
-		private void CorrodePlayer(Player player)
+		private void CorrodePlayer(Player player, Player scp035)
 		{
-			if (scpPlayer != null)
+			if (scp035 != null)
 			{
-				int currHP = (int)scpPlayer.HP;
-				scpPlayer.HP = currHP + 5 > 300 ? 300 : currHP + 5;
+				int currHP = (int)scp035.HP;
+				scp035.HP = currHP + 5 > 300 ? 300 : currHP + 5;
 			}
 			if (player.HP - 5 > 0)
 				player.HP -= 5;
 			else
 			{
-				scpPlayer.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
+				scp035.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
 				player.Damage(55555, DamageTypes.Falldown);
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 					if (doll.owner.PlayerId == player.Id)

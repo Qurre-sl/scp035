@@ -12,153 +12,128 @@ namespace scp035
 	{
 		public static Plugin Plugin;
 		public EventHandlers(Plugin plugin) => Plugin = plugin;
-		private static Dictionary<Pickup, float> scpPickups = new Dictionary<Pickup, float>();
-		internal static Player scpPlayer;
-		internal bool isRoundStarted;
-		internal static bool isRotating;
-		private static int maxHP;
-		private const float dur = 327;
+		private const float dur = 1337035;
+		private const string TagForPlayer = " scp035";
 		public void WFP() => Cfg.Reload();
 		public void RoundStart()
 		{
 			RefreshItems();
-			isRoundStarted = true;
-			isRotating = true;
-			scpPlayer = null;
 			Timing.RunCoroutine(CorrodeUpdate(), "scp035coroutines");
 		}
 		public void RoundEnd(RoundEndEvent ev)
 		{
-			isRoundStarted = false;
 			Timing.KillCoroutines("scp035coroutines");
 		}
-		public void RoundRestart() => isRoundStarted = false;
 		public void PickupItem(PickupItemEvent ev)
 		{
-			if (ev.Allowed)
-				if (scpPlayer == null)
-					if (ev.Pickup.durability == dur)
-					{
-						ev.Allowed = false;
-						InfectPlayer(ev.Player, ev.Pickup);
-					}
+			if (ev.Pickup.durability == dur && ev.Allowed)
+			{
+				ev.Allowed = false;
+				InfectPlayer(ev.Player, ev.Pickup);
+			}
 		}
-		public void PlayerHurt(DamageEvent ev)
+		public void Damage(DamageEvent ev)
 		{
 			RemoveFF(ev.Attacker);
-			if (scpPlayer != null)
+			if ((ev.Attacker.Tag.Contains(TagForPlayer) && ev.Target.Team == Team.SCP) ||
+				(ev.Target.Tag.Contains(TagForPlayer) && ev.Attacker.Team == Team.SCP))
 			{
-				if ((ev.Attacker.Id == scpPlayer?.Id &&
-					ev.Target.Team == Team.SCP) ||
-					(ev.Target.Id == scpPlayer?.Id &&
-					ev.Attacker.Team == Team.SCP))
-				{
-					ev.Allowed = false;
-					ev.Amount = 0f;
-				}
-				if (ev.Attacker.Id != ev.Target.Id &&
-					((ev.Attacker.Id == scpPlayer?.Id &&
-					ev.Target.Team == Team.TUT) ||
-					(ev.Target.Id == scpPlayer?.Id &&
-					ev.Attacker.Team == Team.TUT)))
-				{
-					ev.Allowed = false;
-					ev.Amount = 0f;
-				}
+				ev.Allowed = false;
+				ev.Amount = 0f;
+			}
+			if (ev.Attacker.Id != ev.Target.Id &&
+				((ev.Attacker.Tag.Contains(TagForPlayer) && ev.Target.Team == Team.TUT) ||
+				(ev.Target.Tag.Contains(TagForPlayer) && ev.Attacker.Team == Team.TUT)))
+			{
+				ev.Allowed = false;
+				ev.Amount = 0f;
 			}
 		}
 		public void Shoot(ShootingEvent ev)
 		{
-			if (ev.Target == null || scpPlayer == null) return;
+			if (ev.Target == null) return;
 			Player target = Player.Get(ev.Target);
 			if (target == null) return;
-			if (target.Id == scpPlayer?.Id || ev.Shooter.Id == scpPlayer?.Id)
+			if (target.Tag.Contains(TagForPlayer) || ev.Shooter.Tag.Contains(TagForPlayer))
 				GrantFF(ev.Shooter);
 		}
-		public void PlayerDie(DiesEvent ev)
+		public void Dies(DiesEvent ev)
 		{
-			if (ev.Target.Id == scpPlayer?.Id)
-			{
-				KillScp035();
-				return;
-			}
-			if (ev.Killer?.Id == scpPlayer?.Id && ev.Killer?.Id != ev.Target?.Id)
+			if (ev.Killer.Tag.Contains(TagForPlayer) && ev.Killer?.Id != ev.Target?.Id)
 			{
 				if (ev.Target.Team == Team.SCP) return;
 				if (ev.Target.Role == RoleType.Spectator) return;
-				scpPlayer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.GetDamageType());
+				ev.Killer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.GetDamageType());
 			}
 		}
-		public void PlayerDied(DeadEvent ev)
+		public void Dead(DeadEvent ev)
 		{
-			if (ev.Killer.Id == scpPlayer?.Id)
+			if (ev.Target.Tag.Contains(TagForPlayer))
+				KillScp035(ev.Target);
+			if (ev.Killer.Tag.Contains(TagForPlayer))
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 					if (doll.owner.PlayerId == ev.Target.Id)
 						NetworkServer.Destroy(doll.gameObject);
 		}
-		public void scpzeroninesixe(EnrageEvent ev)
+		public void AddTarget(AddTargetEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id) ev.Allowed = false;
-		}
-		public void scpzeroninesixeadd(AddTargetEvent ev)
-		{
-			if (ev.Target.Id == scpPlayer?.Id)
+			if (ev.Target.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
 		public void PocketDimensionEnter(PocketDimensionEnterEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
+			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
 		public void FemurBreaker(FemurBreakerEnterEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
+			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void CheckEscape(EscapeEvent ev)
+		public void Escape(EscapeEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
+			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void SetClass(RoleChangeEvent ev)
+		public void ChangeRole(RoleChangeEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id && ev.NewRole == RoleType.Spectator)
-				KillScp035();
+			if (ev.Player.Tag.Contains(TagForPlayer) && ev.NewRole == RoleType.Spectator)
+				KillScp035(ev.Player);
 		}
-		public void PlayerLeave(LeaveEvent ev)
+		public void Leave(LeaveEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
-				KillScp035(false);
+			if (ev.Player.Tag.Contains(TagForPlayer))
+				KillScp035(ev.Player, true);
 		}
-		public void Contain106(ContainEvent ev)
+		public void Contain(ContainEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
+			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void PlayerHandcuffed(CuffEvent ev)
+		public void Cuff(CuffEvent ev)
 		{
-			if (ev.Target.Id == scpPlayer?.Id)
+			if (ev.Target.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void InsertTablet(InteractGeneratorEvent ev)
+		public void Generator(InteractGeneratorEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
+			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void PocketDimensionDie(PocketDimensionFailEscapeEvent ev)
+		public void Pocket(PocketDimensionFailEscapeEvent ev)
 		{
-			if (ev.Player.Id == scpPlayer?.Id)
+			if (ev.Player.Tag.Contains(TagForPlayer))
 			{
 				ev.Allowed = false;
-				Extensions.TeleportTo106(ev.Player);
+				ev.Player.TeleportTo106();
 			}
 		}
-		public void Med(MedicalUsingEvent ev)
+		public void Medical(MedicalUsingEvent ev)
 		{
 			try
 			{
-				if (ev.Player == null || ev.Player.UserId == null || scpPlayer == null || scpPlayer.UserId == null) return;
-				if (ev.Player.UserId == scpPlayer.UserId)
+				if (ev.Player == null) return;
+				if (ev.Player.Tag.Contains(TagForPlayer))
 				{
 					ev.Player.MaxHP = 300;
 				}
@@ -167,20 +142,19 @@ namespace scp035
 		}
 		public void Check(CheckEvent ev)
 		{
-			if (scpPlayer == null || scpPlayer.UserId == null) return;
 			int mtf_team = ev.ClassList.mtf_and_guards + ev.ClassList.scientists;
 			int d_team = ev.ClassList.chaos_insurgents + ev.ClassList.class_ds;
 			int scp_team = ev.ClassList.scps_except_zombies + ev.ClassList.zombies;
-			if (scpPlayer.Team == Team.MTF || scpPlayer.Team == Team.RIP) mtf_team--;
-			else if (scpPlayer.Team == Team.CDP || scpPlayer.Team == Team.CHI) d_team--;
-			scp_team++;
+			mtf_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.MTF || x.Team == Team.RSC)).Count();
+			d_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.CDP || x.Team == Team.CHI)).Count();
+			scp_team += Player.List.Where(x => x.Tag.Contains(TagForPlayer)).Count();
 			int count = 0;
 			if (mtf_team > 0) ++count;
 			if (d_team > 0) ++count;
 			if (scp_team > 0) ++count;
 			if (count <= 1) Round.End();
 		}
-		public void RunOnRACommandSent(SendingRAEvent ev)
+		public void Ra(SendingRAEvent ev)
 		{
 			try
 			{

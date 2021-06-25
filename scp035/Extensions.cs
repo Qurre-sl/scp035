@@ -5,12 +5,7 @@ namespace scp035
 {
 	public static class Extensions
 	{
-		public static void SetRank(this ReferenceHub player, string rank, string color = "default")
-		{
-			player.serverRoles.NetworkMyText = rank;
-			player.serverRoles.NetworkMyColor = color;
-		}
-		internal static void TeleportTo106(Player player)
+		internal static void TeleportTo106(this Player player)
 		{
 			try
 			{

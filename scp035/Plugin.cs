@@ -4,8 +4,8 @@ namespace scp035
 	public class Plugin : Qurre.Plugin
 	{
 		#region override
-		public override System.Version Version => new System.Version(1, 0, 11);
-		public override System.Version NeededQurreVersion => new System.Version(1, 3, 0);
+		public override System.Version Version => new System.Version(1, 1, 0);
+		public override System.Version NeededQurreVersion => new System.Version(1, 4, 2);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
 		public override int Priority => -10000;
@@ -23,24 +23,22 @@ namespace scp035
 			Round.Start += EventHandlers.RoundStart;
 			Player.PickupItem += EventHandlers.PickupItem;
 			Round.End += EventHandlers.RoundEnd;
-			Round.Restart += EventHandlers.RoundRestart;
-			Player.Dies += EventHandlers.PlayerDie;
-			Player.Dead += EventHandlers.PlayerDied;
-			Player.Damage += EventHandlers.PlayerHurt;
+			Player.Dies += EventHandlers.Dies;
+			Player.Dead += EventHandlers.Dead;
+			Player.Damage += EventHandlers.Damage;
 			SCPs.SCP106.PocketDimensionEnter += EventHandlers.PocketDimensionEnter;
 			SCPs.SCP106.FemurBreakerEnter += EventHandlers.FemurBreaker;
-			Player.Escape += EventHandlers.CheckEscape;
-			Player.RoleChange += EventHandlers.SetClass;
-			Player.Leave += EventHandlers.PlayerLeave;
-			SCPs.SCP106.Contain += EventHandlers.Contain106;
-			Player.Cuff += EventHandlers.PlayerHandcuffed;
-			Player.InteractGenerator += EventHandlers.InsertTablet;
-			SCPs.SCP106.PocketDimensionFailEscape += EventHandlers.PocketDimensionDie;
+			Player.Escape += EventHandlers.Escape;
+			Player.RoleChange += EventHandlers.ChangeRole;
+			Player.Leave += EventHandlers.Leave;
+			SCPs.SCP106.Contain += EventHandlers.Contain;
+			Player.Cuff += EventHandlers.Cuff;
+			Player.InteractGenerator += EventHandlers.Generator;
+			SCPs.SCP106.PocketDimensionFailEscape += EventHandlers.Pocket;
 			Player.Shooting += EventHandlers.Shoot;
-			Server.SendingRA += EventHandlers.RunOnRACommandSent;
-			SCPs.SCP096.Enrage += EventHandlers.scpzeroninesixe;
-			SCPs.SCP096.AddTarget += EventHandlers.scpzeroninesixeadd;
-			Player.MedicalUsing += EventHandlers.Med;
+			Server.SendingRA += EventHandlers.Ra;
+			SCPs.SCP096.AddTarget += EventHandlers.AddTarget;
+			Player.MedicalUsing += EventHandlers.Medical;
 			Round.Check += EventHandlers.Check;
 		}
 		public void UnregisterEvents()
@@ -49,24 +47,22 @@ namespace scp035
 			Round.Start -= EventHandlers.RoundStart;
 			Player.PickupItem -= EventHandlers.PickupItem;
 			Round.End -= EventHandlers.RoundEnd;
-			Round.Restart -= EventHandlers.RoundRestart;
-			Player.Dies -= EventHandlers.PlayerDie;
-			Player.Dead -= EventHandlers.PlayerDied;
-			Player.Damage -= EventHandlers.PlayerHurt;
+			Player.Dies -= EventHandlers.Dies;
+			Player.Dead -= EventHandlers.Dead;
+			Player.Damage -= EventHandlers.Damage;
 			SCPs.SCP106.PocketDimensionEnter -= EventHandlers.PocketDimensionEnter;
 			SCPs.SCP106.FemurBreakerEnter -= EventHandlers.FemurBreaker;
-			Player.Escape -= EventHandlers.CheckEscape;
-			Player.RoleChange -= EventHandlers.SetClass;
-			Player.Leave -= EventHandlers.PlayerLeave;
-			SCPs.SCP106.Contain -= EventHandlers.Contain106;
-			Player.Cuff -= EventHandlers.PlayerHandcuffed;
-			Player.InteractGenerator -= EventHandlers.InsertTablet;
-			SCPs.SCP106.PocketDimensionFailEscape -= EventHandlers.PocketDimensionDie;
+			Player.Escape -= EventHandlers.Escape;
+			Player.RoleChange -= EventHandlers.ChangeRole;
+			Player.Leave -= EventHandlers.Leave;
+			SCPs.SCP106.Contain -= EventHandlers.Contain;
+			Player.Cuff -= EventHandlers.Cuff;
+			Player.InteractGenerator -= EventHandlers.Generator;
+			SCPs.SCP106.PocketDimensionFailEscape -= EventHandlers.Pocket;
 			Player.Shooting -= EventHandlers.Shoot;
-			Server.SendingRA -= EventHandlers.RunOnRACommandSent;
-			SCPs.SCP096.Enrage -= EventHandlers.scpzeroninesixe;
-			SCPs.SCP096.AddTarget -= EventHandlers.scpzeroninesixeadd;
-			Player.MedicalUsing -= EventHandlers.Med;
+			Server.SendingRA -= EventHandlers.Ra;
+			SCPs.SCP096.AddTarget -= EventHandlers.AddTarget;
+			Player.MedicalUsing -= EventHandlers.Medical;
 			Round.Check -= EventHandlers.Check;
 
 			EventHandlers = null;
