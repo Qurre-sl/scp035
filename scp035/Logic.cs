@@ -92,11 +92,6 @@ namespace scp035
 			else
 			{
 				scp035.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
-				Timing.CallDelayed(2f, () =>
-				{
-					scp035.RoleColor = "red";
-					scp035.RoleName = "SCP 035";
-				});
 				player.Damage(55555, DamageTypes.Falldown);
 				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 					if (doll.owner.PlayerId == player.Id)

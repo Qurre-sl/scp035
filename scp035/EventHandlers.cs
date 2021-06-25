@@ -64,11 +64,6 @@ namespace scp035
 				if (ev.Target.Team == Team.SCP) return;
 				if (ev.Target.Role == RoleType.Spectator) return;
 				ev.Killer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.GetDamageType());
-				Timing.CallDelayed(2f, () =>
-				{
-					ev.Killer.RoleColor = "red";
-					ev.Killer.RoleName = "SCP 035";
-				});
 			}
 		}
 		public void Dead(DeadEvent ev)
