@@ -135,7 +135,7 @@ namespace scp035
 				if (ev.Player == null) return;
 				if (ev.Player.Tag.Contains(TagForPlayer))
 				{
-					ev.Player.MaxHP = 300;
+					ev.Player.MaxHp = 300;
 				}
 			}
 			catch { }

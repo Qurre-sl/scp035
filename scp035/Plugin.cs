@@ -4,8 +4,8 @@ namespace scp035
 	public class Plugin : Qurre.Plugin
 	{
 		#region override
-		public override System.Version Version => new System.Version(1, 1, 0);
-		public override System.Version NeededQurreVersion => new System.Version(1, 4, 2);
+		public override System.Version Version => new System.Version(1, 1, 1);
+		public override System.Version NeededQurreVersion => new System.Version(1, 5, 1);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
 		public override int Priority => -10000;
@@ -26,18 +26,18 @@ namespace scp035
 			Player.Dies += EventHandlers.Dies;
 			Player.Dead += EventHandlers.Dead;
 			Player.Damage += EventHandlers.Damage;
-			SCPs.SCP106.PocketDimensionEnter += EventHandlers.PocketDimensionEnter;
-			SCPs.SCP106.FemurBreakerEnter += EventHandlers.FemurBreaker;
+			Scp106.PocketDimensionEnter += EventHandlers.PocketDimensionEnter;
+			Scp106.FemurBreakerEnter += EventHandlers.FemurBreaker;
 			Player.Escape += EventHandlers.Escape;
 			Player.RoleChange += EventHandlers.ChangeRole;
 			Player.Leave += EventHandlers.Leave;
-			SCPs.SCP106.Contain += EventHandlers.Contain;
+			Scp106.Contain += EventHandlers.Contain;
 			Player.Cuff += EventHandlers.Cuff;
 			Player.InteractGenerator += EventHandlers.Generator;
-			SCPs.SCP106.PocketDimensionFailEscape += EventHandlers.Pocket;
+			Scp106.PocketDimensionFailEscape += EventHandlers.Pocket;
 			Player.Shooting += EventHandlers.Shoot;
 			Server.SendingRA += EventHandlers.Ra;
-			SCPs.SCP096.AddTarget += EventHandlers.AddTarget;
+			Scp096.AddTarget += EventHandlers.AddTarget;
 			Player.MedicalUsing += EventHandlers.Medical;
 			Round.Check += EventHandlers.Check;
 		}
@@ -50,18 +50,18 @@ namespace scp035
 			Player.Dies -= EventHandlers.Dies;
 			Player.Dead -= EventHandlers.Dead;
 			Player.Damage -= EventHandlers.Damage;
-			SCPs.SCP106.PocketDimensionEnter -= EventHandlers.PocketDimensionEnter;
-			SCPs.SCP106.FemurBreakerEnter -= EventHandlers.FemurBreaker;
+			Scp106.PocketDimensionEnter -= EventHandlers.PocketDimensionEnter;
+			Scp106.FemurBreakerEnter -= EventHandlers.FemurBreaker;
 			Player.Escape -= EventHandlers.Escape;
 			Player.RoleChange -= EventHandlers.ChangeRole;
 			Player.Leave -= EventHandlers.Leave;
-			SCPs.SCP106.Contain -= EventHandlers.Contain;
+			Scp106.Contain -= EventHandlers.Contain;
 			Player.Cuff -= EventHandlers.Cuff;
 			Player.InteractGenerator -= EventHandlers.Generator;
-			SCPs.SCP106.PocketDimensionFailEscape -= EventHandlers.Pocket;
+			Scp106.PocketDimensionFailEscape -= EventHandlers.Pocket;
 			Player.Shooting -= EventHandlers.Shoot;
 			Server.SendingRA -= EventHandlers.Ra;
-			SCPs.SCP096.AddTarget -= EventHandlers.AddTarget;
+			Scp096.AddTarget -= EventHandlers.AddTarget;
 			Player.MedicalUsing -= EventHandlers.Medical;
 			Round.Check -= EventHandlers.Check;
 

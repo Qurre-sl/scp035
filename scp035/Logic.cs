@@ -25,7 +25,7 @@ namespace scp035
 			if (!leave)
 			{
 				pl.Tag = pl.Tag.Replace(TagForPlayer, "");
-				pl.MaxHP = pl.ClassManager.CurRole.maxHP;
+				pl.MaxHp = pl.ClassManager.CurRole.maxHP;
 				pl.RoleColor = "default";
 				pl.RoleName = "";
 			}
@@ -34,8 +34,8 @@ namespace scp035
 		}
 		public static void Spawn035(Player p035)
 		{
-			p035.MaxHP = 300;
-			p035.HP = 300;
+			p035.MaxHp = 300;
+			p035.Hp = 300;
 			p035.Broadcast(Cfg.bct, Cfg.bc1);
 			Cassie.Send(Cfg.cassie, false, false, true);
 			p035.RoleColor = "red";
@@ -84,11 +84,11 @@ namespace scp035
 		{
 			if (scp035 != null)
 			{
-				int currHP = (int)scp035.HP;
-				scp035.HP = currHP + 5 > 300 ? 300 : currHP + 5;
+				int currHP = (int)scp035.Hp;
+				scp035.Hp = currHP + 5 > 300 ? 300 : currHP + 5;
 			}
-			if (player.HP - 5 > 0)
-				player.HP -= 5;
+			if (player.Hp - 5 > 0)
+				player.Hp -= 5;
 			else
 			{
 				scp035.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
