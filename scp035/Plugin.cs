@@ -5,7 +5,7 @@ namespace scp035
 	{
 		#region override
 		public override System.Version Version => new System.Version(1, 1, 3);
-		public override System.Version NeededQurreVersion => new System.Version(1, 6, 0);
+		public override System.Version NeededQurreVersion => new System.Version(1, 8, 3);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
 		public override int Priority => 10000;
