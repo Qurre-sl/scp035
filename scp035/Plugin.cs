@@ -4,7 +4,7 @@ namespace scp035
 	public class Plugin : Qurre.Plugin
 	{
 		#region override
-		public override System.Version Version => new System.Version(1, 1, 3);
+		public override System.Version Version => new System.Version(1, 1, 4);
 		public override System.Version NeededQurreVersion => new System.Version(1, 8, 3);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
