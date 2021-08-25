@@ -2,17 +2,20 @@
 using Mirror;
 using Qurre;
 using Qurre.API;
+using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+
 namespace scp035
 {
 	public partial class EventHandlers
 	{
 		public static Plugin Plugin;
 		public EventHandlers(Plugin plugin) => Plugin = plugin;
-		private const float dur = 1337035;
+		private static List<Pickup> Items = new List<Pickup>();
 		private const string TagForPlayer = " scp035";
 		public void WFP() => Cfg.Reload();
 		public void RoundStart()
@@ -26,7 +29,7 @@ namespace scp035
 		}
 		public void PickupItem(PickupItemEvent ev)
 		{
-			if (ev.Pickup.durability == dur && ev.Allowed)
+			if (Items.Contains(ev.Pickup) && ev.Pickup != null && ev.Allowed)
 			{
 				ev.Allowed = false;
 				InfectPlayer(ev.Player, ev.Pickup);
@@ -51,8 +54,7 @@ namespace scp035
 		}
 		public void Shoot(ShootingEvent ev)
 		{
-			if (ev.Target == null) return;
-			Player target = Player.Get(ev.Target);
+			Player target = Player.List.ToList().Find(x => (x.Scale.x * 2) >= Vector3.Distance(x.Position, ev.Message.TargetPosition));
 			if (target == null) return;
 			if (target.Tag.Contains(TagForPlayer) || ev.Shooter.Tag.Contains(TagForPlayer))
 				GrantFF(ev.Shooter);
@@ -63,7 +65,7 @@ namespace scp035
 			{
 				if (ev.Target.Team == Team.SCP) return;
 				if (ev.Target.Role == RoleType.Spectator) return;
-				ev.Killer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.GetDamageType());
+				ev.Killer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.Tool);
 			}
 		}
 		public void Dead(DeadEvent ev)
@@ -128,7 +130,7 @@ namespace scp035
 				ev.Player.TeleportTo106();
 			}
 		}
-		public void Medical(MedicalUsingEvent ev)
+		public void Medical(ItemUsingEvent ev)
 		{
 			try
 			{

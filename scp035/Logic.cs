@@ -2,6 +2,7 @@
 using Mirror;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Controllers.Items;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,14 +12,15 @@ namespace scp035
 	{
 		private static void RemovePossessedItems()
 		{
-			foreach (Pickup p in Map.Pickups.Where(x => x.durability == dur && x != null)) p.Delete();
+			foreach (Pickup p in Items.Where(x => x != null)) p.Destroy();
+			Items.Clear();
 		}
 		internal void RefreshItems()
 		{
 			RemovePossessedItems();
 			Vector3 m = Map.Rooms[Random.Range(0, Map.Rooms.Count - 1)].Position + Vector3.up;
 			int it = Random.Range(0, 35);
-			Qurre.API.Item.Spawn((ItemType)it, dur, m);
+			new Item((ItemType)it).Spawn(m);
 		}
 		internal void KillScp035(Player pl, bool leave = false)
 		{
@@ -44,7 +46,7 @@ namespace scp035
 		}
 		public void InfectPlayer(Player player, Pickup pItem)
 		{
-			pItem.Delete();
+			pItem.Destroy();
 			Spawn035(player);
 			RemovePossessedItems();
 		}

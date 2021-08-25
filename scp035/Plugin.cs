@@ -4,7 +4,7 @@ namespace scp035
 	public class Plugin : Qurre.Plugin
 	{
 		#region override
-		public override System.Version Version => new System.Version(1, 1, 2);
+		public override System.Version Version => new System.Version(1, 1, 3);
 		public override System.Version NeededQurreVersion => new System.Version(1, 6, 0);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
@@ -38,7 +38,7 @@ namespace scp035
 			Player.Shooting += EventHandlers.Shoot;
 			Server.SendingRA += EventHandlers.Ra;
 			Scp096.AddTarget += EventHandlers.AddTarget;
-			Player.MedicalUsing += EventHandlers.Medical;
+			Player.ItemUsing += EventHandlers.Medical;
 			Round.Check += EventHandlers.Check;
 		}
 		public void UnregisterEvents()
@@ -62,7 +62,7 @@ namespace scp035
 			Player.Shooting -= EventHandlers.Shoot;
 			Server.SendingRA -= EventHandlers.Ra;
 			Scp096.AddTarget -= EventHandlers.AddTarget;
-			Player.MedicalUsing -= EventHandlers.Medical;
+			Player.ItemUsing -= EventHandlers.Medical;
 			Round.Check -= EventHandlers.Check;
 
 			EventHandlers = null;
