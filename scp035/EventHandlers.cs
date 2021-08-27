@@ -149,9 +149,14 @@ namespace scp035
 			int mtf_team = ev.ClassList.mtf_and_guards + ev.ClassList.scientists;
 			int d_team = ev.ClassList.chaos_insurgents + ev.ClassList.class_ds;
 			int scp_team = ev.ClassList.scps_except_zombies + ev.ClassList.zombies;
-			mtf_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.MTF || x.Team == Team.RSC)).Count() + (scp343ByKnuckles != null && scp343ByKnuckles.Team == Team.MTF || scp343ByKnuckles.Team == Team.RSC ? 1 : 0);
-			d_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.CDP || x.Team == Team.CHI)).Count() + (scp343ByKnuckles != null && scp343ByKnuckles.Team == Team.CDP || scp343ByKnuckles.Team == Team.CHI ? 1 : 0);
+			mtf_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.MTF || x.Team == Team.RSC)).Count();
+			d_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.CDP || x.Team == Team.CHI)).Count();
 			scp_team += Player.List.Where(x => x.Tag.Contains(TagForPlayer)).Count();
+			if(scp343ByKnuckles != null)
+            {
+				if (scp343ByKnuckles.Team == Team.MTF || scp343ByKnuckles.Team == Team.RSC) mtf_team--;
+				if (scp343ByKnuckles.Team == Team.CDP || scp343ByKnuckles.Team == Team.CHI) d_team--;
+			}
 			int count = 0;
 			if (mtf_team > 0) ++count;
 			if (d_team > 0) ++count;

@@ -19,8 +19,10 @@ namespace scp035
 		{
 			RemovePossessedItems();
 			Vector3 m = Map.Rooms[Random.Range(0, Map.Rooms.Count - 1)].Position + Vector3.up;
-			int it = Random.Range(0, 35);
-			new Item((ItemType)it).Spawn(m);
+			int it = Random.Range(0, 41);
+			var p = new Item((ItemType)it).Spawn(m);
+			if (p != null) Items.Add(p);
+			else RefreshItems();
 		}
 		internal void KillScp035(Player pl, bool leave = false)
 		{
