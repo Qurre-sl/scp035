@@ -152,8 +152,8 @@ namespace scp035
 			mtf_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.MTF || x.Team == Team.RSC)).Count();
 			d_team -= Player.List.Where(x => x.Tag.Contains(TagForPlayer) && (x.Team == Team.CDP || x.Team == Team.CHI)).Count();
 			scp_team += Player.List.Where(x => x.Tag.Contains(TagForPlayer)).Count();
-			if(scp343ByKnuckles != null)
-            {
+			if (scp343ByKnuckles != null)
+			{
 				if (scp343ByKnuckles.Team == Team.MTF || scp343ByKnuckles.Team == Team.RSC) mtf_team--;
 				if (scp343ByKnuckles.Team == Team.CDP || scp343ByKnuckles.Team == Team.CHI) d_team--;
 			}
@@ -161,7 +161,7 @@ namespace scp035
 			if (mtf_team > 0) ++count;
 			if (d_team > 0) ++count;
 			if (scp_team > 0) ++count;
-			if (count <= 1) Round.End();
+			if (count <= 1) ev.RoundEnd = true;
 		}
 		public void Ra(SendingRAEvent ev)
 		{
