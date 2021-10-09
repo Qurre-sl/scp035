@@ -82,7 +82,7 @@ namespace scp035
 			if (ev.Target.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void PocketDimensionEnter(PocketDimensionEnterEvent ev)
+		public void PocketDimensionEnter(PocketEnterEvent ev)
 		{
 			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
@@ -122,7 +122,7 @@ namespace scp035
 			if (ev.Player.Tag.Contains(TagForPlayer))
 				ev.Allowed = false;
 		}
-		public void Pocket(PocketDimensionFailEscapeEvent ev)
+		public void Pocket(PocketFailEscapeEvent ev)
 		{
 			if (ev.Player.Tag.Contains(TagForPlayer))
 			{
