@@ -65,7 +65,7 @@ namespace scp035
 			{
 				if (ev.Target.Team == Team.SCP) return;
 				if (ev.Target.Role == RoleType.Spectator) return;
-				ev.Killer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, ev.HitInfo.Tool);
+				ev.Killer.ChangeBody(ev.Target.Role, true, ev.Target.Position, ev.Target.Rotation, Cfg.dr);
 			}
 		}
 		public void Dead(DeadEvent ev)
@@ -73,9 +73,8 @@ namespace scp035
 			if (ev.Target.Tag.Contains(TagForPlayer))
 				KillScp035(ev.Target);
 			if (ev.Killer.Tag.Contains(TagForPlayer))
-				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
-					if (doll.owner.PlayerId == ev.Target.Id)
-						NetworkServer.Destroy(doll.gameObject);
+				foreach (var doll in Map.Ragdolls.Where(x => x.Owner == ev.Target))
+					doll.Destroy();
 		}
 		public void AddTarget(AddTargetEvent ev)
 		{

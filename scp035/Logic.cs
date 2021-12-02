@@ -95,11 +95,10 @@ namespace scp035
 				player.Hp -= 5;
 			else
 			{
-				scp035.ChangeBody(player.Role, true, player.Position, player.Rotation, DamageTypes.Falldown);
-				player.Damage(55555, DamageTypes.Falldown);
-				foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
-					if (doll.owner.PlayerId == player.Id)
-						NetworkServer.Destroy(doll.gameObject);
+				scp035.ChangeBody(player.Role, true, player.Position, player.Rotation, Cfg.dr);
+				player.Kill(Cfg.dr);
+				foreach (var doll in Map.Ragdolls.Where(x => x.Owner == player))
+					doll.Destroy();
 			}
 		}
 	}
