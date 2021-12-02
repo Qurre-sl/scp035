@@ -13,4 +13,5 @@ scp035_cassie: ATTENTION TO ALL PERSONNEL . SCP 0 3 5 ESCAPE . ALL HELICOPTERS A
 scp035_command: scp035
 scp035_not_found: Player not found!
 scp035_suc: Successfully!
+scp035_dead_reason: Died of decomposition
 ```
