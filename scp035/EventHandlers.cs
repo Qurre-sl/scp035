@@ -1,5 +1,4 @@
 ﻿using MEC;
-using Mirror;
 using Qurre;
 using Qurre.API;
 using Qurre.API.Controllers.Items;
@@ -8,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 namespace scp035
 {
 	public partial class EventHandlers
@@ -35,9 +33,10 @@ namespace scp035
 				InfectPlayer(ev.Player, ev.Pickup);
 			}
 		}
-		public void Damage(DamageEvent ev)
+		public void Damage(DamageProcessEvent ev)
 		{
-			RemoveFF(ev.Attacker);
+			if (ev.Attacker == null || ev.Target == null) return;
+			if (ev.Target.Tag.Contains(TagForPlayer) || ev.Attacker.Tag.Contains(TagForPlayer)) ev.FriendlyFire = false;
 			if ((ev.Attacker.Tag.Contains(TagForPlayer) && ev.Target.Team == Team.SCP) ||
 				(ev.Target.Tag.Contains(TagForPlayer) && ev.Attacker.Team == Team.SCP))
 			{
@@ -51,13 +50,6 @@ namespace scp035
 				ev.Allowed = false;
 				ev.Amount = 0f;
 			}
-		}
-		public void Shoot(ShootingEvent ev)
-		{
-			Player target = Player.List.ToList().Find(x => (x.Scale.x * 2) >= Vector3.Distance(x.Position, ev.Message.TargetPosition));
-			if (target == null) return;
-			if (target.Tag.Contains(TagForPlayer) || ev.Shooter.Tag.Contains(TagForPlayer))
-				GrantFF(ev.Shooter);
 		}
 		public void Dies(DiesEvent ev)
 		{
@@ -191,7 +183,5 @@ namespace scp035
 
 			}
 		}
-		private void GrantFF(Player player) => player.FriendlyFire = true;
-		private void RemoveFF(Player player) => player.FriendlyFire = false;
 	}
 }

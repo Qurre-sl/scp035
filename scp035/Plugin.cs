@@ -4,8 +4,8 @@ namespace scp035
 	public class Plugin : Qurre.Plugin
 	{
 		#region override
-		public override System.Version Version => new System.Version(1, 1, 7);
-		public override System.Version NeededQurreVersion => new System.Version(1, 10, 0);
+		public override System.Version Version => new System.Version(1, 1, 8);
+		public override System.Version NeededQurreVersion => new System.Version(1, 10, 4);
 		public override string Developer => "fydne";
 		public override string Name => "scp035";
 		public override int Priority => 10000;
@@ -25,7 +25,7 @@ namespace scp035
 			Round.End += EventHandlers.RoundEnd;
 			Player.Dies += EventHandlers.Dies;
 			Player.Dead += EventHandlers.Dead;
-			Player.Damage += EventHandlers.Damage;
+			Player.DamageProcess += EventHandlers.Damage;
 			Scp106.PocketEnter += EventHandlers.PocketDimensionEnter;
 			Scp106.FemurBreakerEnter += EventHandlers.FemurBreaker;
 			Player.Escape += EventHandlers.Escape;
@@ -35,7 +35,6 @@ namespace scp035
 			Player.Cuff += EventHandlers.Cuff;
 			Player.InteractGenerator += EventHandlers.Generator;
 			Scp106.PocketFailEscape += EventHandlers.Pocket;
-			Player.Shooting += EventHandlers.Shoot;
 			Server.SendingRA += EventHandlers.Ra;
 			Scp096.AddTarget += EventHandlers.AddTarget;
 			Player.ItemUsing += EventHandlers.Medical;
@@ -49,7 +48,7 @@ namespace scp035
 			Round.End -= EventHandlers.RoundEnd;
 			Player.Dies -= EventHandlers.Dies;
 			Player.Dead -= EventHandlers.Dead;
-			Player.Damage -= EventHandlers.Damage;
+			Player.DamageProcess -= EventHandlers.Damage;
 			Scp106.PocketEnter -= EventHandlers.PocketDimensionEnter;
 			Scp106.FemurBreakerEnter -= EventHandlers.FemurBreaker;
 			Player.Escape -= EventHandlers.Escape;
@@ -59,7 +58,6 @@ namespace scp035
 			Player.Cuff -= EventHandlers.Cuff;
 			Player.InteractGenerator -= EventHandlers.Generator;
 			Scp106.PocketFailEscape -= EventHandlers.Pocket;
-			Player.Shooting -= EventHandlers.Shoot;
 			Server.SendingRA -= EventHandlers.Ra;
 			Scp096.AddTarget -= EventHandlers.AddTarget;
 			Player.ItemUsing -= EventHandlers.Medical;
