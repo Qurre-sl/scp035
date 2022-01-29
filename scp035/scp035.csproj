@@ -40,8 +40,8 @@
     <Reference Include="Mirror">
       <HintPath>..\..\lib\Mirror.dll</HintPath>
     </Reference>
-    <Reference Include="Qurre, Version=1.10.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Qurre.1.10.4\lib\net472\Qurre.dll</HintPath>
+    <Reference Include="Qurre, Version=1.11.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Qurre.1.11.10\lib\net472\Qurre.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
