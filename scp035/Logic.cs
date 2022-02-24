@@ -1,5 +1,4 @@
 ﻿using MEC;
-using Mirror;
 using Qurre.API;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Items;
@@ -61,10 +60,8 @@ namespace scp035
 				{
 					if (Round.Started)
 					{
-						IEnumerable<Player> pList = Player.List.Where(x => !x.Tag.Contains(TagForPlayer));
-						pList = pList.Where(x => x.Team != Team.SCP);
-						pList = pList.Where(x => x.Team != Team.TUT);
-						pList = pList.Where(x => x.Team != Team.RIP);
+						IEnumerable<Player> pList = Player.List.Where(x => !x.Tag.Contains(TagForPlayer) && !x.Tag.Contains("scp343-knuckles") &&
+						x.Team != Team.SCP && x.Team != Team.TUT && x.Team != Team.RIP);
 						foreach (Player scp035 in Player.List.Where(x => x.Tag.Contains(TagForPlayer)))
 						{
 							foreach (Player player in pList)
@@ -91,8 +88,7 @@ namespace scp035
 				int currHP = (int)scp035.Hp;
 				scp035.Hp = currHP + 5 > 300 ? 300 : currHP + 5;
 			}
-			if (player.Hp - 5 > 0)
-				player.Hp -= 5;
+			if (player.Hp - 5 > 0) player.Damage(5, Cfg.dr);
 			else
 			{
 				scp035.ChangeBody(player.Role, true, player.Position, player.Rotation, Cfg.dr);

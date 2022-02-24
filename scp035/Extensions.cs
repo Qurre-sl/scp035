@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 namespace scp035
 {
-	public static class Extensions
+	internal static class Extensions
 	{
 		internal static void TeleportTo106(this Player player)
 		{
