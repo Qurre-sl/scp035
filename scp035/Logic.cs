@@ -11,7 +11,7 @@ namespace scp035
 	{
 		private static void RemovePossessedItems()
 		{
-			foreach (Pickup p in Items.Where(x => x != null)) p.Destroy();
+			foreach (Pickup p in Items.Where(x => x != null)) try { p.Destroy(); } catch { }
 			Items.Clear();
 		}
 		internal void RefreshItems()
